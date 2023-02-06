@@ -1,13 +1,25 @@
-# print("Hello World! 👋🎉")
+<h1 align="center">Hi 👋, I'm <b>c1b3r-p3d1a</b></h1>
+<h3 align="center">A guy who likes to code while having fun</h3>
 
-My name is c1b3r-p3d1a and I like to code while have fun. You can enter some of my repos and take a look at them. I have mostly Python Scripts, but I also have:
+--------------------------
 
-- NodeJS
-- HTML, CSS, JS
-- ASP.NET (a project that is suspended :( )
+- 🔭 I’m currently working on **developing my skills**
 
-## About me
+- 🌱 I’m currently learning **tailwindcss**
 
-**ERROR_404** _(Not Found)_
+- 👨‍💻 All of my projects are available [here](https://github.com/c1b3r-p3d1a)
 
-![](https://user-images.githubusercontent.com/5713670/87202985-820dcb80-c2b6-11ea-9f56-7ec461c497c3.gif)
+- 💬 Ask me about: **Python**
+
+- 📫 How to reach me: **Soon...**
+
+- ⚡ Fun fact: **I like math**
+
+<h3 align="left"><b>Connect with me:</b></h3>
+<p align="left">
+<a href="https://stackoverflow.com/users/21134869" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/stack-overflow.svg" alt="21134869" height="30" width="40" /></a>
+</p>
+
+<p><img align="left" src="https://github-readme-stats.vercel.app/api/top-langs?username=c1b3r-p3d1a&show_icons=true&locale=en&layout=compact" alt="c1b3r-p3d1a" /></p>
+
+<p>&nbsp;<img align="center" src="https://github-readme-stats.vercel.app/api?username=c1b3r-p3d1a&show_icons=true&locale=en" alt="c1b3r-p3d1a" /></p>
