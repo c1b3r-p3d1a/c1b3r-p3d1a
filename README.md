@@ -1,4 +1,4 @@
-<h1 align="center">Hi 👋, I'm <b>c1b3r-p3d1a</b></h1>
+<h1 align="center">print("Hi 👋, I'm <b>c1b3r-p3d1a</b>")</h1>
 <h3 align="center">A guy who likes to code while having fun</h3>
 
 --------------------------
