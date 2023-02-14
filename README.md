@@ -3,7 +3,7 @@
 
 --------------------------
 
-- 🔭 I’m currently working on **developing my skills**
+- 🔭 I’m currently working on **Wiz Tasker**
 
 - 🌱 I’m currently learning **tailwindcss**
 
