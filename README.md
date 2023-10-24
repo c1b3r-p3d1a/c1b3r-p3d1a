@@ -3,11 +3,11 @@
 
 --------------------------
 
-- 🔭 I’m currently working on my videogame, [**Sanaré: El Asilo Olvidado**](https://c1b3r-p3d1a.itch.io/el-asilo-olvidado)
+- 🔭 I’m currently working on my videogame, <a href="https://c1b3r-p3d1a.itch.io/el-asilo-olvidado" style="text-decoration: none; cursor: pointer; color:#000000" target="_blank"><b>Sanaré: El Asilo Olvidado</b></a>
 
 - 🌱 I’m currently learning **GDScript**
 
-- 👨‍💻 All of my projects are available [here](https://github.com/c1b3r-p3d1a?tab=repositories)
+- 👨‍💻 All of my projects are available <a href="https://github.com/c1b3r-p3d1a?tab=repositories" style="text-decoration: none; cursor: pointer; color:#000000" target="_blank"><b>here</b></a>
 
 - 💬 Ask me about: **Python**
 
