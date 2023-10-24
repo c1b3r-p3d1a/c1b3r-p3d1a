@@ -3,17 +3,17 @@
 
 --------------------------
 
-- 🔭 I’m currently working on **Wiz Tasker**
+- 🔭 I’m currently working on my videogame, [**Sanaré: El Asilo Olvidado**](https://c1b3r-p3d1a.itch.io/el-asilo-olvidado)
 
-- 🌱 I’m currently learning **tailwindcss**
+- 🌱 I’m currently learning **GDScript**
 
-- 👨‍💻 All of my projects are available [here](https://github.com/c1b3r-p3d1a)
+- 👨‍💻 All of my projects are available [here](https://github.com/c1b3r-p3d1a?tab=repositories)
 
 - 💬 Ask me about: **Python**
 
 - 📫 How to reach me: **Soon...**
 
-- ⚡ Fun fact: **I like math**
+- ⚡ Fun fact: **I like math and physics**
 
 --------------------------
 
