@@ -9,11 +9,11 @@
 
 - 👨‍💻 All of my projects are available <a href="https://github.com/c1b3r-p3d1a?tab=repositories" style="text-decoration: none; cursor: pointer; color:#000000" target="_blank"><b>here</b></a>
 
-- 💬 Ask me about: **Python**
+- 💬 Ask me about: **Python**, **HTML/CSS/JS"**, **NodeJS**
 
 - 📫 How to reach me: **Soon...**
 
-- ⚡ Fun fact: **I like math and physics**
+- ⚡ Fun fact: **I hate brocoli**
 
 --------------------------
 
