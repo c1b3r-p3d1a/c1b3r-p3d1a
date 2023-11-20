@@ -9,7 +9,7 @@
 
 - 👨‍💻 All of my projects are available <a href="https://github.com/c1b3r-p3d1a?tab=repositories" style="text-decoration: none; cursor: pointer; color:#000000" target="_blank"><b>here</b></a>
 
-- 💬 Ask me about: **Python**, **HTML/CSS/JS"**, **NodeJS**
+- 💬 Ask me about: **Python**, **HTML/CSS/JS**, **NodeJS**
 
 - 📫 How to reach me: **Soon...**
 
