@@ -5,15 +5,11 @@
 
 - 🔭 I’m currently working on my videogame, <a href="#" style="text-decoration: none; cursor: pointer; color:#000000" target="_blank"><b>~~Sanaré: El Asilo Olvidado~~</b></a>
 
-- 🌱 I’m currently learning **GDScript**
+- 🌱 I’m currently learning **CPU Architecture**
 
 - 👨‍💻 All of my projects are available <a href="https://github.com/c1b3r-p3d1a?tab=repositories" style="text-decoration: none; cursor: pointer; color:#000000" target="_blank"><b>here</b></a>
 
 - 💬 Ask me about: **Python**, **HTML/CSS/JS**, **NodeJS**
-
-- 📫 How to reach me: **Soon...**
-
-- ⚡ Fun fact: **I hate brocoli**
 
 --------------------------
 
