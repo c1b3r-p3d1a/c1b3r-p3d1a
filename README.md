@@ -3,7 +3,7 @@
 
 --------------------------
 
-- 🔭 I’m currently working on my videogame, <a href="https://c1b3r-p3d1a.itch.io/el-asilo-olvidado" style="text-decoration: none; cursor: pointer; color:#000000" target="_blank"><b>Sanaré: El Asilo Olvidado</b></a>
+- 🔭 I’m currently working on my videogame, <a href="#" style="text-decoration: none; cursor: pointer; color:#000000" target="_blank"><b>~~Sanaré: El Asilo Olvidado~~</b></a>
 
 - 🌱 I’m currently learning **GDScript**
 
