@@ -3,7 +3,7 @@
 
 --------------------------
 
-- 🔭 I’m currently working on my blog, <b>0xbitAbit</b>
+- 🔭 I’m currently **learning**
 
 - 🌱 I’m currently learning **CPU Architecture** and **Electronics**
 
