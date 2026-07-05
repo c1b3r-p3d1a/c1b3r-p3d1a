@@ -3,7 +3,7 @@
 
 --------------------------
 
-- 🔭 I’m currently **learning**
+- 🔭 I’m currently working on a <a href="https://github.com/c1b3r-p3d1a/riscv-emu" style="text-decoration: none; cursor: pointer; color:#000000" target="_blank"><b>RISC-V emulator</b></a>
 
 - 🌱 I’m currently learning **CPU Architecture** and **Electronics**
 
