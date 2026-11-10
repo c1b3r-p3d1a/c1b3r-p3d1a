@@ -12,12 +12,8 @@
 
 <br>
 
-<a href="https://github.com/c1b3r-p3d1a/riscv-emu">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api/pin/?username=c1b3r-p3d1a&repo=riscv-emu&theme=github_dark&bg_color=0d1117&hide_border=true" />
-    <img src="https://github-readme-stats.vercel.app/api/pin/?username=c1b3r-p3d1a&repo=riscv-emu&hide_border=true" alt="riscv-emu" />
-  </picture>
-</a>
+<a href="https://github.com/c1b3r-p3d1a/riscv-emu"><img src="https://img.shields.io/github/languages/top/c1b3r-p3d1a/riscv-emu?style=flat-square&color=30363d&labelColor=161b22" alt="language" /></a>
+<a href="https://github.com/c1b3r-p3d1a/riscv-emu/commits"><img src="https://img.shields.io/github/last-commit/c1b3r-p3d1a/riscv-emu?style=flat-square&color=30363d&labelColor=161b22&label=last%20commit" alt="last commit" /></a>
 
 <br><br>
 
