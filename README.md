@@ -1,89 +1,29 @@
 <div align="center">
 
-# c1b3r-p3d1a
+<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=500&size=22&duration=3500&pause=1200&color=8B949E&center=true&vCenter=true&width=480&lines=building+things+to+understand+them;systems+%C2%B7+data+%C2%B7+web" alt="typing" />
 
-**Software developer · Systems, data & full-stack**
+<br>
 
-I build things to understand how they work: from CPU emulators and network protocols<br>
-to quantitative tooling and production-ready web apps.
+<img src="https://skillicons.dev/icons?i=c,python,ts,react,latex,git" alt="stack" />
 
-</div>
+<br><br>
 
----
+**now** → [`riscv-emu`](https://github.com/c1b3r-p3d1a/riscv-emu) &nbsp;·&nbsp; **learning** → computer architecture
 
-### About
+<br>
 
-- **Low-level & systems.** Writing a RISC-V emulator in C, plus from-scratch implementations of a POSIX-style shell and a BitTorrent client.
-- **Data & quantitative analysis.** Backtesting engines and REST APIs for market signal detection, scientific modelling and visualization.
-- **Full-stack.** Type-safe web apps and installable PWAs with React, TypeScript and Node.
-- **Approach.** Learn by building, read the spec, test the edge cases, keep it simple.
+<a href="https://github.com/c1b3r-p3d1a/riscv-emu">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api/pin/?username=c1b3r-p3d1a&repo=riscv-emu&theme=github_dark&bg_color=0d1117&hide_border=true" />
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=c1b3r-p3d1a&repo=riscv-emu&hide_border=true" alt="riscv-emu" />
+  </picture>
+</a>
 
-### Currently
+<br><br>
 
-```yaml
-building:  riscv-emu        # RISC-V emulator in C
-learning:  computer architecture, operating systems internals, networking protocols
-exploring: quantitative finance, scientific visualization
-```
-
-### Languages by domain
-
-| Domain | Languages & tools |
-| :-- | :-- |
-| Systems & low-level | C, RISC-V assembly, Bash |
-| Backend & APIs | Python, Node.js, REST |
-| Frontend & mobile | TypeScript, React, Tailwind CSS, PWA |
-| Data & quant | Python (pandas, NumPy), SQL |
-| Scientific & docs | LaTeX, Python + Blender |
-
-### Tech stack
-
-<p>
-  <img src="https://skillicons.dev/icons?i=c,python,ts,js,react,nodejs,html,css,tailwind&perline=9" alt="Languages and frameworks" />
-</p>
-<p>
-  <img src="https://skillicons.dev/icons?i=git,github,linux,bash,docker,vscode,latex,blender,vite&perline=9" alt="Tools" />
-</p>
-
-### Current projects
-
-| Project | Description | Stack | Status |
-| :-- | :-- | :-- | :-- |
-| [**riscv-emu**](https://github.com/c1b3r-p3d1a/riscv-emu) | RISC-V instruction set emulator: decoding, execution and memory model built from the spec. | C | 🚧 In progress |
-
-<div align="center">
-  <a href="https://github.com/c1b3r-p3d1a/riscv-emu">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api/pin/?username=c1b3r-p3d1a&repo=riscv-emu&theme=github_dark&bg_color=0d1117&hide_border=true" />
-      <img src="https://github-readme-stats.vercel.app/api/pin/?username=c1b3r-p3d1a&repo=riscv-emu&hide_border=true" alt="riscv-emu" />
-    </picture>
-  </a>
-</div>
-
-<sub>Most of my work lives in private repositories. Highlights include a backtesting engine with a REST API, a shared-expenses PWA, a training analytics dashboard and procedurally generated scientific animations.</sub>
-
-### GitHub stats
-
-<div align="center">
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api?username=c1b3r-p3d1a&show_icons=true&include_all_commits=true&count_private=true&hide_border=true&theme=github_dark&bg_color=0d1117" />
-  <img height="165" src="https://github-readme-stats.vercel.app/api?username=c1b3r-p3d1a&show_icons=true&include_all_commits=true&count_private=true&hide_border=true" alt="GitHub stats" />
-</picture>
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://streak-stats.demolab.com?user=c1b3r-p3d1a&theme=github-dark-blue&hide_border=true&background=0D1117" />
-  <img height="165" src="https://streak-stats.demolab.com?user=c1b3r-p3d1a&hide_border=true" alt="Contribution streak" />
+  <img src="https://streak-stats.demolab.com?user=c1b3r-p3d1a&hide_border=true" alt="streak" />
 </picture>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-activity-graph.vercel.app/graph?username=c1b3r-p3d1a&theme=github-compact&hide_border=true&bg_color=0d1117&area=true" />
-  <img width="100%" src="https://github-readme-activity-graph.vercel.app/graph?username=c1b3r-p3d1a&theme=minimal&hide_border=true&area=true" alt="Contribution activity graph" />
-</picture>
-
-</div>
-
----
-
-<div align="center">
-  <img src="https://komarev.com/ghpvc/?username=c1b3r-p3d1a&label=Profile%20views&color=0e75b6&style=flat-square" alt="Profile views" />
 </div>
