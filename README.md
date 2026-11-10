@@ -18,6 +18,24 @@ to quantitative tooling and production-ready web apps.
 - **Full-stack.** Type-safe web apps and installable PWAs with React, TypeScript and Node.
 - **Approach.** Learn by building, read the spec, test the edge cases, keep it simple.
 
+### Currently
+
+```yaml
+building:  riscv-emu        # RISC-V emulator in C
+learning:  computer architecture, operating systems internals, networking protocols
+exploring: quantitative finance, scientific visualization
+```
+
+### Languages by domain
+
+| Domain | Languages & tools |
+| :-- | :-- |
+| Systems & low-level | C, RISC-V assembly, Bash |
+| Backend & APIs | Python, Node.js, REST |
+| Frontend & mobile | TypeScript, React, Tailwind CSS, PWA |
+| Data & quant | Python (pandas, NumPy), SQL |
+| Scientific & docs | LaTeX, Python + Blender |
+
 ### Tech stack
 
 <p>
@@ -27,11 +45,20 @@ to quantitative tooling and production-ready web apps.
   <img src="https://skillicons.dev/icons?i=git,github,linux,bash,docker,vscode,latex,blender,vite&perline=9" alt="Tools" />
 </p>
 
-### Featured project
+### Current projects
 
-| Project | Description | Stack |
-| :-- | :-- | :-- |
-| [**riscv-emu**](https://github.com/c1b3r-p3d1a/riscv-emu) | RISC-V instruction set emulator: decoding, execution and memory model built from the spec. | C |
+| Project | Description | Stack | Status |
+| :-- | :-- | :-- | :-- |
+| [**riscv-emu**](https://github.com/c1b3r-p3d1a/riscv-emu) | RISC-V instruction set emulator: decoding, execution and memory model built from the spec. | C | 🚧 In progress |
+
+<div align="center">
+  <a href="https://github.com/c1b3r-p3d1a/riscv-emu">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api/pin/?username=c1b3r-p3d1a&repo=riscv-emu&theme=github_dark&bg_color=0d1117&hide_border=true" />
+      <img src="https://github-readme-stats.vercel.app/api/pin/?username=c1b3r-p3d1a&repo=riscv-emu&hide_border=true" alt="riscv-emu" />
+    </picture>
+  </a>
+</div>
 
 <sub>Most of my work lives in private repositories. Highlights include a backtesting engine with a REST API, a shared-expenses PWA, a training analytics dashboard and procedurally generated scientific animations.</sub>
 
