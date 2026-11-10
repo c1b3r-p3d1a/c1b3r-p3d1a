@@ -1,10 +1,10 @@
 <div align="center">
 
-<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=500&size=22&duration=3500&pause=1200&color=8B949E&center=true&vCenter=true&width=480&lines=building+things+to+understand+them;systems+%C2%B7+data+%C2%B7+web" alt="typing" />
+<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=500&size=22&duration=3500&pause=1200&color=8B949E&center=true&vCenter=true&width=480&lines=building+things+to+understand+them" alt="typing" />
 
 <br>
 
-<img src="https://skillicons.dev/icons?i=c,python,ts,react,latex,git" alt="stack" />
+<img src="https://skillicons.dev/icons?i=python,c,latex,git,linux,nodejs" alt="stack" />
 
 <br><br>
 
