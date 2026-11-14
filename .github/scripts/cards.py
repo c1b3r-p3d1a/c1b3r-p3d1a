@@ -126,6 +126,20 @@ def main():
             f.write(card(t, "CONTRIBUTING", "AnyPS5", "Reimplementing PS5 system libraries.",
                          stats(t, [(short(commits), "commits"), (short(prs), "pull requests"), (short(merged), "merged")], libs),
                          "C++", "#f34b7d", UPSTREAM))
+    bust_cache()
+
+
+def bust_cache():
+    """Point README at card-*.svg?v=<content hash> so browsers and GitHub's image cache fetch new versions."""
+    import hashlib
+    readme = open("README.md", encoding="utf-8").read()
+
+    def ver(m):
+        h = hashlib.sha1(open(m[1], "rb").read()).hexdigest()[:8]
+        return f"{m[1]}?v={h}"
+
+    new = re.sub(r"(assets/card-[\w-]+\.svg)(\?v=\w+)?", ver, readme)
+    open("README.md", "w", encoding="utf-8", newline="\n").write(new)
 
 
 if __name__ == "__main__":
