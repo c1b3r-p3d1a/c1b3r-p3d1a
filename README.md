@@ -9,7 +9,7 @@ Contributed to [**AnyPS5**](https://github.com/boykopovar/AnyPS5/pulls?q=is%3Apr
 <br>
 
 <!-- stats -->
-Joined GitHub **4** years ago · **72** contributions in the last year · **9** merged pull requests · **3**-day streak (best **3**)
+Joined GitHub **4** years ago · **73** contributions in the last year · **8** merged pull requests · **3**-day streak (best **3**)
 <!-- /stats -->
 
 <picture>
