@@ -1,4 +1,4 @@
-"""Regenerate assets/card-*.svg from live GitHub data. Run daily by .github/workflows/cards.yml."""
+"""Regenerate assets/card-*.svg from live GitHub data. Run hourly by .github/workflows/cards.yml."""
 import base64
 import json
 import os
