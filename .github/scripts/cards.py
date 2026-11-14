@@ -118,28 +118,34 @@ def main():
     lines = emu_lines()
     commits, prs, merged, libs = anyps5()
     print(f"riscv-emu: {lines} lines | AnyPS5: {commits} commits, {prs} PRs, {merged} merged, libs={libs}")
+    cards = {}
     for name, t in THEMES.items():
-        with open(f"assets/card-riscv-{name}.svg", "w", encoding="utf-8") as f:
-            f.write(card(t, "BUILDING", "riscv-emu", "A RISC-V emulator, written from the spec.",
-                         pipeline(t), "C", "#555555", f"{short(lines)} lines of C"))
-        with open(f"assets/card-anyps5-{name}.svg", "w", encoding="utf-8") as f:
-            f.write(card(t, "CONTRIBUTING", "AnyPS5", "Reimplementing PS5 system libraries.",
-                         stats(t, [(short(commits), "commits"), (short(prs), "pull requests"), (short(merged), "merged")], libs),
-                         "C++", "#f34b7d", UPSTREAM))
-    bust_cache()
+        cards[f"riscv-{name}"] = card(t, "BUILDING", "riscv-emu", "A RISC-V emulator, written from the spec.",
+                                      pipeline(t), "C", "#555555", f"{short(lines)} lines of C")
+        cards[f"anyps5-{name}"] = card(t, "CONTRIBUTING", "AnyPS5", "Reimplementing PS5 system libraries.",
+                                       stats(t, [(short(commits), "commits"), (short(prs), "pull requests"), (short(merged), "merged")], libs),
+                                       "C++", "#f34b7d", UPSTREAM)
+    write_versioned(cards)
 
 
-def bust_cache():
-    """Point README at card-*.svg?v=<content hash> so browsers and GitHub's image cache fetch new versions."""
-    import hashlib
+def write_versioned(cards):
+    """Save each card as assets/cards/<key>-<content hash>.svg and point README at it.
+    GitHub's raw CDN caches by path (query strings are dropped on redirect), so a new name is the only reliable refresh."""
+    import glob, hashlib
+    os.makedirs("assets/cards", exist_ok=True)
+    keep = set()
     readme = open("README.md", encoding="utf-8").read()
-
-    def ver(m):
-        h = hashlib.sha1(open(m[1], "rb").read()).hexdigest()[:8]
-        return f"{m[1]}?v={h}"
-
-    new = re.sub(r"(assets/card-[\w-]+\.svg)(\?v=\w+)?", ver, readme)
-    open("README.md", "w", encoding="utf-8", newline="\n").write(new)
+    for key, svg in cards.items():
+        path = f"assets/cards/{key}-{hashlib.sha1(svg.encode()).hexdigest()[:8]}.svg"
+        keep.add(path)
+        with open(path, "w", encoding="utf-8", newline="\n") as f:
+            f.write(svg)
+        # matches both the new versioned names and the old assets/card-<key>.svg(?v=..) form
+        readme = re.sub(rf"assets/(?:cards/{key}-\w+|card-{key})\.svg(?:\?v=\w+)?", path, readme)
+    open("README.md", "w", encoding="utf-8", newline="\n").write(readme)
+    for old in glob.glob("assets/cards/*.svg") + glob.glob("assets/card-*.svg"):
+        if old.replace("\\", "/") not in keep:
+            os.remove(old)
 
 
 if __name__ == "__main__":
