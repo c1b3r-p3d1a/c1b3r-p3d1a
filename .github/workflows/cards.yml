@@ -1,8 +1,7 @@
 name: cards
 on:
   schedule:
-    # GitHub drops many scheduled runs; asking every 15 min (off the busy :00) means ~hourly in practice
-    - cron: '7,22,37,52 * * * *'
+    - cron: '3-58/5 * * * *'
   workflow_dispatch:
 
 permissions:
