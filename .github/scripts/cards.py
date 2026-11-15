@@ -53,7 +53,9 @@ def anyps5():
             if m:
                 libs[m[1]] = libs.get(m[1], 0) + 1
     top = sorted(libs, key=libs.get, reverse=True)[:2]
-    return commits, len(prs), merged, top
+    # PRs by other people where I left comments (testing, reporting errors)
+    helped = api(f"search/issues?q=repo:{UPSTREAM}+is:pr+commenter:{USER}+-author:{USER}&per_page=1")["total_count"]
+    return commits, len(prs), merged, helped, top
 
 
 # ---- drawing -------------------------------------------------------------
@@ -108,22 +110,22 @@ def pipeline(t):
 def stats(t, nums, libs):
     out = ""
     for i, (n, label) in enumerate(nums):
-        x = 28 + i * 140
-        out += (f'<text x="{x}" y="143" style="{F};font-size:28px;font-weight:700" fill="{t["fg"]}">{n}</text>'
-                f'<text x="{x + 8 + 17 * len(n)}" y="142" style="{S};font-size:13px" fill="{t["mu"]}">{label}</text>')
-    return out + chips(libs, 28, 164, t)
+        x = 28 + i * 108
+        out += (f'<text x="{x}" y="138" style="{F};font-size:26px;font-weight:700" fill="{t["fg"]}">{n}</text>'
+                f'<text x="{x}" y="156" style="{S};font-size:12px" fill="{t["mu"]}">{label}</text>')
+    return out + chips(libs, 28, 168, t)
 
 
 def main():
     lines = emu_lines()
-    commits, prs, merged, libs = anyps5()
-    print(f"riscv-emu: {lines} lines | AnyPS5: {commits} commits, {prs} PRs, {merged} merged, libs={libs}")
+    commits, prs, merged, helped, libs = anyps5()
+    print(f"riscv-emu: {lines} lines | AnyPS5: {commits} commits, {prs} PRs, {merged} merged, {helped} helped, libs={libs}")
     cards = {}
     for name, t in THEMES.items():
         cards[f"riscv-{name}"] = card(t, "BUILDING", "riscv-emu", "A RISC-V emulator, written from the spec.",
                                       pipeline(t), "C", "#555555", f"{short(lines)} lines of C")
         cards[f"anyps5-{name}"] = card(t, "CONTRIBUTING", "AnyPS5", "Reimplementing PS5 system libraries.",
-                                       stats(t, [(short(commits), "commits"), (short(prs), "pull requests"), (short(merged), "merged")], libs),
+                                       stats(t, [(short(commits), "commits"), (short(prs), "PRs opened"), (short(merged), "merged"), (short(helped), "PRs helped")], libs),
                                        "C++", "#f34b7d", UPSTREAM)
     write_versioned(cards)
 
