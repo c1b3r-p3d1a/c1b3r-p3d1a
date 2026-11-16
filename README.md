@@ -2,7 +2,7 @@
   <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg" />
   <img width="100%" src="assets/banner-light.svg" alt="c1b3r-p3d1a — building things to understand them" />
 </picture>
-<a href="https://github.com/c1b3r-p3d1a/riscv-emu"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/cards/riscv-dark-2673b781.svg" /><img width="49.6%" src="assets/cards/riscv-light-60784bef.svg" alt="riscv-emu — a RISC-V emulator in C" /></picture></a><a href="https://github.com/boykopovar/AnyPS5/pulls?q=is%3Apr+author%3Ac1b3r-p3d1a+is%3Amerged"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/cards/anyps5-dark-5a1874d3.svg" /><img width="49.6%" src="assets/cards/anyps5-light-5dcaaa3d.svg" alt="AnyPS5 — contributions" /></picture></a>
+<a href="https://github.com/c1b3r-p3d1a/riscv-emu"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/cards/riscv-dark-2673b781.svg" /><img width="49.6%" src="assets/cards/riscv-light-60784bef.svg" alt="riscv-emu — a RISC-V emulator in C" /></picture></a><a href="https://github.com/boykopovar/AnyPS5/pulls?q=is%3Apr+author%3Ac1b3r-p3d1a+is%3Amerged"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/cards/anyps5-dark-8c3e271f.svg" /><img width="49.6%" src="assets/cards/anyps5-light-3b144686.svg" alt="AnyPS5 — contributions" /></picture></a>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/stack-dark.svg" />
