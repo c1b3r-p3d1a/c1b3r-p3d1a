@@ -1,0 +1,21 @@
+{
+  "_about": "riscv-emu milestones on the way to booting Linux. 'detect' = regexes that must ALL match somewhere in src/ or include/; the milestone date is the first commit where they do (and still do at HEAD). Milestones without 'detect' are marked by hand: set 'done' to YYYY-MM-DD.",
+  "milestones": [
+    {"id": "rv32i",   "name": "RV32I base ISA",        "detect": ["OPCODE_B_TYPE", "OPCODE_J_TYPE", "OPCODE_S_TYPE", "OPCODE_I_LOAD_TYPE"]},
+    {"id": "elf",     "name": "ELF loader",            "detect": ["\\bload_elf\\("]},
+    {"id": "m",       "name": "M: multiply/divide",    "detect": ["mulhu", "remu"]},
+    {"id": "csr",     "name": "CSRs + traps",          "detect": ["csrrw", "\\btrap\\(", "MEPC"]},
+    {"id": "a",       "name": "A: atomics, LR/SC",     "detect": ["amoadd", "\\bsc\\("]},
+    {"id": "c",       "name": "C: compressed",         "detect": ["compressed_reg"]},
+    {"id": "timer",   "name": "Timer interrupts",      "detect": ["mtimecmp"]},
+    {"id": "priv",    "name": "M/S/U modes",           "detect": ["MEDELEG", "SEPC"]},
+    {"id": "mmu",     "name": "Sv32 MMU",              "detect": ["translate_mmu", "SATP"]},
+    {"id": "uart",    "name": "UART console",          "detect": ["0x10000000"]},
+    {"id": "image",   "name": "Linux Image loader",    "detect": ["load_kernel_image"]},
+    {"id": "sbi",     "name": "SBI firmware calls",    "detect": ["(?i)\\bsbi_"]},
+    {"id": "dtb",     "name": "Device tree handoff",   "detect": ["(?i)\\b(dtb|fdt)\\w*\\s*[=(]"]},
+    {"id": "plic",    "name": "PLIC + external IRQs",  "detect": ["(?i)plic"]},
+    {"id": "early",   "name": "Linux early console",   "done": null},
+    {"id": "shell",   "name": "Linux boots to shell",  "done": null}
+  ]
+}

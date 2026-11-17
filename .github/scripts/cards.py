@@ -1,4 +1,4 @@
-"""Regenerate assets/card-*.svg from live GitHub data. Run hourly by .github/workflows/cards.yml."""
+"""Regenerate assets/card-*.svg from live GitHub data. Run on a schedule by .github/workflows/cards.yml."""
 import base64
 import datetime as dt
 import json
@@ -127,6 +127,8 @@ def main():
     lines = emu_lines()
     commits, prs, merged, helped, libs = anyps5()
     print(f"riscv-emu: {lines} lines | AnyPS5: {commits} commits, {prs} PRs, {merged} merged, {helped} helped, libs={libs}")
+    ms = emu_milestones()
+    print("milestones:", ", ".join(f"{n}={d}" for n, d in ms))
     cards = {}
     for name, t in THEMES.items():
         cards[f"riscv-{name}"] = card(t, "BUILDING", "riscv-emu", "A RISC-V emulator, written from the spec.",
@@ -134,11 +136,38 @@ def main():
         cards[f"anyps5-{name}"] = card(t, "CONTRIBUTING", "AnyPS5", "Reimplementing PS5 system libraries.",
                                        stats(t, [(short(commits), "commits"), (short(prs), "PRs opened"), (short(merged), "merged"), (short(helped), "PRs helped")], libs),
                                        "C++", "#f34b7d", UPSTREAM, tag="AI")
-        cards[f"timeline-{name}"] = timeline(t, dt.date.today())
+        cards[f"timeline-{name}"] = timeline(t, dt.date.today(), ms)
     write_versioned(cards)
 
 
 # ---- roadmap ---------------------------------------------------------------
+def emu_milestones():
+    """[(name, date|None)] from roadmap/milestones.json: a milestone is done on the first riscv-emu commit
+    whose src/ + include/ match all its 'detect' regexes (and HEAD still matches), or on its manual 'done' date."""
+    import subprocess, tempfile
+    spec = json.load(open("roadmap/milestones.json", encoding="utf-8"))["milestones"]
+    repo = tempfile.mkdtemp()
+    # skip big blobs (kernel image, rootfs): only small source files are needed
+    subprocess.run(["git", "clone", "-q", "--filter=blob:limit=512k", f"https://github.com/{EMU}.git", repo], check=True)
+
+    def git(*a):
+        return subprocess.run(["git", "-C", repo, *a], capture_output=True, text=True,
+                              encoding="utf-8", errors="replace", check=True).stdout
+
+    commits = [l.split() for l in git("log", "--reverse", "--format=%H %ad", "--date=short").splitlines()]
+    src = {}
+    for sha, _ in commits:
+        files = [f for f in git("ls-tree", "-r", "--name-only", sha).splitlines() if re.match(r"(src|include)/.*\.[ch]$", f)]
+        src[sha] = "\n".join(git("show", f"{sha}:{f}") for f in files)
+    out = []
+    for m in spec:
+        when = m.get("done")
+        if "detect" in m:
+            ok = lambda sha: all(re.search(p, src[sha]) for p in m["detect"])
+            if ok(commits[-1][0]):
+                when = next(d for sha, d in commits if ok(sha))
+        out.append((m["name"], dt.date.fromisoformat(when) if when else None))
+    return out
 TL_START, TL_MONTHS = (2026, 7), 30          # Jul 2026 .. Dec 2028
 EMU_START, EMU_END = (2026, 7), (2028, 1)    # riscv-emu: first commit .. target "done by end of 2027"
 OS_START = (2028, 1)                         # OS from scratch: after the emulator, end date not set
@@ -151,8 +180,12 @@ def months_since(ym, d):
 assert months_since((2026, 7), (2028, 1)) == 18
 
 
-def timeline(t, today):
-    TW, TH = 980, 196
+def timeline(t, today, milestones):
+    cols, row_h = 4, 24
+    rows = -(-len(milestones) // cols)
+    list_y = 236
+    TW, TH = 980, list_y + (rows - 1) * row_h + 30
+    bar_bottom = 192  # tracks + NOW label live above this; milestone list below
     pad = 6 / 1292 * TW / (1 - 2 * 6 / 1292)  # same outer gap as the stack strip
     x0, x1 = 196, TW - 28
     step = (x1 - x0) / TL_MONTHS
@@ -167,7 +200,7 @@ def timeline(t, today):
         if m == 1 or i == 0:
             out += f'<text x="{x + 2:.1f}" y="66" style="{F};font-size:12px;font-weight:700" fill="{t["fg"]}">{y}</text>'
             if i:
-                out += f'<line x1="{x:.1f}" y1="54" x2="{x:.1f}" y2="{TH - 20}" stroke="{t["bd"]}"/>'
+                out += f'<line x1="{x:.1f}" y1="54" x2="{x:.1f}" y2="{bar_bottom - 20}" stroke="{t["bd"]}"/>'
         out += f'<text x="{x + step / 2:.1f}" y="86" text-anchor="middle" style="{F};font-size:10px" fill="{t["mu"]}">{"JFMAMJJASOND"[m - 1]}</text>'
 
     now = mx((today.year, today.month), (today.day - 1) / 31)
@@ -175,8 +208,10 @@ def timeline(t, today):
     e0, e1 = mx(EMU_START), mx(EMU_END)
     done = min(max(now, e0), e1)
     o0 = mx(OS_START)
+    n_done = sum(1 for _, d in milestones if d)
     out += f'''
-<text x="28" y="{ey + 5}" style="{F};font-size:14px;font-weight:700" fill="{t["fg"]}">riscv-emu</text>
+<text x="28" y="{ey + 1}" style="{F};font-size:14px;font-weight:700" fill="{t["fg"]}">riscv-emu</text>
+<text x="28" y="{ey + 17}" style="{S};font-size:11px" fill="{t["mu"]}">{n_done}/{len(milestones)} milestones</text>
 <rect x="{e0:.1f}" y="{ey - 7}" width="{e1 - e0:.1f}" height="14" rx="7" fill="{t["chip"]}" stroke="{t["bd"]}"/>
 <rect x="{e0:.1f}" y="{ey - 7}" width="{done - e0:.1f}" height="14" rx="7" fill="{t["ac"]}"/>
 <path d="M{e1:.1f} {ey - 7}l7 7-7 7-7-7z" fill="{t["bg"]}" stroke="{t["ac"]}" stroke-width="1.5"/>
@@ -184,8 +219,29 @@ def timeline(t, today):
 <text x="28" y="{oy + 5}" style="{F};font-size:14px;font-weight:700" fill="{t["fg"]}">OS from scratch</text>
 <rect x="{o0:.1f}" y="{oy - 7}" width="{x1 - o0:.1f}" height="14" rx="7" fill="url(#fade)" stroke="{t["bd"]}" stroke-dasharray="4 4"/>
 <text x="{o0 - 10:.1f}" y="{oy + 4}" text-anchor="end" style="{S};font-size:12px" fill="{t["mu"]}">runs on riscv-emu · date not set</text>
-<line x1="{now:.1f}" y1="96" x2="{now:.1f}" y2="{TH - 20}" stroke="{t["ac"]}" stroke-width="1.5"/>
-<text x="{now:.1f}" y="{TH - 8}" text-anchor="middle" style="{F};font-size:10px;letter-spacing:1px" fill="{t["ac"]}">NOW</text>'''
+<line x1="{now:.1f}" y1="96" x2="{now:.1f}" y2="{bar_bottom - 20}" stroke="{t["ac"]}" stroke-width="1.5"/>
+<text x="{now:.1f}" y="{bar_bottom - 8}" text-anchor="middle" style="{F};font-size:10px;letter-spacing:1px" fill="{t["ac"]}">NOW</text>'''
+
+    # milestone markers on the riscv-emu bar: done = tick at its date, pending = hollow dots spread from now to the target
+    pending = [i for i, (_, d) in enumerate(milestones) if not d]
+    for _, d in milestones:
+        if d:
+            x = mx((d.year, d.month), (d.day - 1) / 31)
+            out += f'<line x1="{x:.1f}" y1="{ey - 4}" x2="{x:.1f}" y2="{ey + 4}" stroke="{t["bg"]}" stroke-width="1.5" stroke-opacity=".8"/>'
+    for k, _ in enumerate(pending):
+        x = done + 14 + (e1 - 20 - done - 14) * (k + 1) / (len(pending) + 1)
+        out += f'<circle cx="{x:.1f}" cy="{ey}" r="3" fill="{t["bg"]}" stroke="{t["mu"]}" stroke-width="1.2"/>'
+
+    # milestone list, column-major, numbered in build order
+    out += f'<line x1="28" y1="{list_y - 26}" x2="{TW - 28}" y2="{list_y - 26}" stroke="{t["bd"]}"/>'
+    colw = (TW - 56) / cols
+    for i, (name, d) in enumerate(milestones):
+        x, y = 28 + (i // rows) * colw, list_y + (i % rows) * row_h
+        dot = (f'<circle cx="{x + 5}" cy="{y - 4}" r="4.5" fill="{t["ac"]}"/>' if d else
+               f'<circle cx="{x + 5}" cy="{y - 4}" r="4" fill="none" stroke="{t["mu"]}" stroke-width="1.2"/>')
+        when = f'<tspan fill="{t["mu"]}" style="{F};font-size:10px">  {d.strftime("%b %Y")}</tspan>' if d else ""
+        out += (dot + f'<text x="{x + 18}" y="{y}" style="{S};font-size:12px" fill="{t["fg"] if d else t["mu"]}">'
+                f'{name}{when}</text>')
     vw, vh = TW + 2 * pad, TH + 2 * pad
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{vw:.2f}" height="{vh:.2f}" viewBox="{-pad:.2f} {-pad:.2f} {vw:.2f} {vh:.2f}">
 <defs><linearGradient id="fade" x1="0" x2="1"><stop offset="0" stop-color="{t["ac"]}" stop-opacity=".25"/><stop offset="1" stop-color="{t["ac"]}" stop-opacity="0"/></linearGradient></defs>
