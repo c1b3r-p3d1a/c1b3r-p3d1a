@@ -224,13 +224,18 @@ def timeline(t, today, milestones):
 
     # milestone markers on the riscv-emu bar: done = tick at its date, pending = hollow dots spread from now to the target
     pending = [i for i, (_, d) in enumerate(milestones) if not d]
+    # done milestones days apart would overlap: one circle per month, mid-month, showing how many were done in it
+    per_month = {}
     for _, d in milestones:
         if d:
-            x = mx((d.year, d.month), (d.day - 1) / 31)
-            out += f'<line x1="{x:.1f}" y1="{ey - 4}" x2="{x:.1f}" y2="{ey + 4}" stroke="{t["bg"]}" stroke-width="1.5" stroke-opacity=".8"/>'
+            per_month[(d.year, d.month)] = per_month.get((d.year, d.month), 0) + 1
+    for ym, n in sorted(per_month.items()):
+        x = mx(ym, 0.5)
+        out += (f'<circle cx="{x:.1f}" cy="{ey}" r="7" fill="{t["bg"]}" stroke="{t["ac"]}" stroke-width="1.5"/>'
+                f'<text x="{x:.1f}" y="{ey + 3.5}" text-anchor="middle" style="{F};font-size:9px;font-weight:700" fill="{t["ac"]}">{n}</text>')
     for k, _ in enumerate(pending):
         x = done + 14 + (e1 - 20 - done - 14) * (k + 1) / (len(pending) + 1)
-        out += f'<circle cx="{x:.1f}" cy="{ey}" r="3" fill="{t["bg"]}" stroke="{t["mu"]}" stroke-width="1.2"/>'
+        out += f'<circle cx="{x:.1f}" cy="{ey}" r="4.5" fill="{t["bg"]}" stroke="{t["mu"]}" stroke-width="1.5"/>'
 
     # milestone list, column-major, numbered in build order
     out += f'<line x1="28" y1="{list_y - 26}" x2="{TW - 28}" y2="{list_y - 26}" stroke="{t["bd"]}"/>'

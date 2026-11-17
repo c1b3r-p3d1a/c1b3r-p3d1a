@@ -10,6 +10,6 @@
 </picture>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/cards/timeline-dark-b58ec073.svg" />
-  <img width="100%" src="assets/cards/timeline-light-5034cb92.svg" alt="Roadmap: riscv-emu milestones to booting Linux, fully working by end of 2027, then an OS from scratch" />
+  <source media="(prefers-color-scheme: dark)" srcset="assets/cards/timeline-dark-f6240571.svg" />
+  <img width="100%" src="assets/cards/timeline-light-70d8937d.svg" alt="Roadmap: riscv-emu milestones to booting Linux, fully working by end of 2027, then an OS from scratch" />
 </picture>
