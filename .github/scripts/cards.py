@@ -1,5 +1,6 @@
 """Regenerate assets/card-*.svg from live GitHub data. Run hourly by .github/workflows/cards.yml."""
 import base64
+import datetime as dt
 import json
 import os
 import re
@@ -79,12 +80,18 @@ def chips(items, x, y, t):
     return out
 
 
-def card(t, kicker, title, desc, body, lang, lcolor, note):
+def card(t, kicker, title, desc, body, lang, lcolor, note, tag=None):
     vw, vh = W + 2 * PAD, H + 2 * PAD
+    pill = ""
+    if tag:  # small pill right after the title, e.g. "AI" for mostly AI-generated work
+        x = 28 + 15.7 * len(title) + 12
+        w = 16 + 7.3 * len(tag)
+        pill = (f'<rect x="{x:.0f}" y="55" width="{w:.0f}" height="22" rx="11" fill="{t["chip"]}" stroke="{t["bd"]}"/>'
+                f'<text x="{x + w / 2:.0f}" y="70" text-anchor="middle" style="{F};font-size:11px" fill="{t["mu"]}">{tag}</text>')
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{vw:.2f}" height="{vh:.2f}" viewBox="{-PAD:.2f} {-PAD:.2f} {vw:.2f} {vh:.2f}">
 <rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="10" fill="{t["bg"]}" stroke="{t["bd"]}"/>
 <text x="28" y="40" style="{F};font-size:11px;letter-spacing:2px" fill="{t["ac"]}">{kicker}</text>
-<text x="28" y="74" style="{F};font-size:26px;font-weight:700" fill="{t["fg"]}">{title}</text>
+<text x="28" y="74" style="{F};font-size:26px;font-weight:700" fill="{t["fg"]}">{title}</text>{pill}
 <text x="28" y="100" style="{S};font-size:14px" fill="{t["mu"]}">{desc}</text>
 {body}
 <line x1="28" y1="200" x2="{W - 28}" y2="200" stroke="{t["bd"]}"/>
@@ -126,8 +133,67 @@ def main():
                                       pipeline(t), "C", "#555555", f"{short(lines)} lines of C")
         cards[f"anyps5-{name}"] = card(t, "CONTRIBUTING", "AnyPS5", "Reimplementing PS5 system libraries.",
                                        stats(t, [(short(commits), "commits"), (short(prs), "PRs opened"), (short(merged), "merged"), (short(helped), "PRs helped")], libs),
-                                       "C++", "#f34b7d", UPSTREAM)
+                                       "C++", "#f34b7d", UPSTREAM, tag="AI")
+        cards[f"timeline-{name}"] = timeline(t, dt.date.today())
     write_versioned(cards)
+
+
+# ---- roadmap ---------------------------------------------------------------
+TL_START, TL_MONTHS = (2026, 7), 30          # Jul 2026 .. Dec 2028
+EMU_START, EMU_END = (2026, 7), (2028, 1)    # riscv-emu: first commit .. target "done by end of 2027"
+OS_START = (2028, 1)                         # OS from scratch: after the emulator, end date not set
+
+
+def months_since(ym, d):
+    return (d[0] - ym[0]) * 12 + d[1] - ym[1]
+
+
+assert months_since((2026, 7), (2028, 1)) == 18
+
+
+def timeline(t, today):
+    TW, TH = 980, 196
+    pad = 6 / 1292 * TW / (1 - 2 * 6 / 1292)  # same outer gap as the stack strip
+    x0, x1 = 196, TW - 28
+    step = (x1 - x0) / TL_MONTHS
+
+    def mx(ym, frac=0.0):
+        return x0 + (months_since(TL_START, ym) + frac) * step
+
+    out = ""
+    for i in range(TL_MONTHS):  # month initials, year labels and year dividers
+        y, m = TL_START[0] + (TL_START[1] - 1 + i) // 12, (TL_START[1] - 1 + i) % 12 + 1
+        x = x0 + i * step
+        if m == 1 or i == 0:
+            out += f'<text x="{x + 2:.1f}" y="66" style="{F};font-size:12px;font-weight:700" fill="{t["fg"]}">{y}</text>'
+            if i:
+                out += f'<line x1="{x:.1f}" y1="54" x2="{x:.1f}" y2="{TH - 20}" stroke="{t["bd"]}"/>'
+        out += f'<text x="{x + step / 2:.1f}" y="86" text-anchor="middle" style="{F};font-size:10px" fill="{t["mu"]}">{"JFMAMJJASOND"[m - 1]}</text>'
+
+    now = mx((today.year, today.month), (today.day - 1) / 31)
+    ey, oy = 118, 158  # track centre lines
+    e0, e1 = mx(EMU_START), mx(EMU_END)
+    done = min(max(now, e0), e1)
+    o0 = mx(OS_START)
+    out += f'''
+<text x="28" y="{ey + 5}" style="{F};font-size:14px;font-weight:700" fill="{t["fg"]}">riscv-emu</text>
+<rect x="{e0:.1f}" y="{ey - 7}" width="{e1 - e0:.1f}" height="14" rx="7" fill="{t["chip"]}" stroke="{t["bd"]}"/>
+<rect x="{e0:.1f}" y="{ey - 7}" width="{done - e0:.1f}" height="14" rx="7" fill="{t["ac"]}"/>
+<path d="M{e1:.1f} {ey - 7}l7 7-7 7-7-7z" fill="{t["bg"]}" stroke="{t["ac"]}" stroke-width="1.5"/>
+<text x="{e1 + 14:.1f}" y="{ey + 4}" style="{S};font-size:12px" fill="{t["mu"]}">fully working · end of 2027</text>
+<text x="28" y="{oy + 5}" style="{F};font-size:14px;font-weight:700" fill="{t["fg"]}">OS from scratch</text>
+<rect x="{o0:.1f}" y="{oy - 7}" width="{x1 - o0:.1f}" height="14" rx="7" fill="url(#fade)" stroke="{t["bd"]}" stroke-dasharray="4 4"/>
+<text x="{o0 - 10:.1f}" y="{oy + 4}" text-anchor="end" style="{S};font-size:12px" fill="{t["mu"]}">runs on riscv-emu · date not set</text>
+<line x1="{now:.1f}" y1="96" x2="{now:.1f}" y2="{TH - 20}" stroke="{t["ac"]}" stroke-width="1.5"/>
+<text x="{now:.1f}" y="{TH - 8}" text-anchor="middle" style="{F};font-size:10px;letter-spacing:1px" fill="{t["ac"]}">NOW</text>'''
+    vw, vh = TW + 2 * pad, TH + 2 * pad
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{vw:.2f}" height="{vh:.2f}" viewBox="{-pad:.2f} {-pad:.2f} {vw:.2f} {vh:.2f}">
+<defs><linearGradient id="fade" x1="0" x2="1"><stop offset="0" stop-color="{t["ac"]}" stop-opacity=".25"/><stop offset="1" stop-color="{t["ac"]}" stop-opacity="0"/></linearGradient></defs>
+<rect x=".5" y=".5" width="{TW - 1}" height="{TH - 1}" rx="10" fill="{t["bg"]}" stroke="{t["bd"]}"/>
+<text x="28" y="40" style="{F};font-size:11px;letter-spacing:2px" fill="{t["ac"]}">ROADMAP</text>
+{out}
+</svg>
+'''
 
 
 def write_versioned(cards):
