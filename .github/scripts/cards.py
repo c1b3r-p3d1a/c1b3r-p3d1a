@@ -11,12 +11,19 @@ EMU = f"{USER}/riscv-emu"
 UPSTREAM = "boykopovar/AnyPS5"
 
 
-def api(path):
+def api(path, tries=4):
+    import time
     req = urllib.request.Request("https://api.github.com/" + path, headers={
         "Authorization": "Bearer " + os.environ["GITHUB_TOKEN"],
         "Accept": "application/vnd.github+json",
     })
-    return json.load(urllib.request.urlopen(req))
+    for i in range(tries):
+        try:
+            return json.load(urllib.request.urlopen(req, timeout=30))
+        except (urllib.error.URLError, TimeoutError) as e:  # GitHub returns occasional 502/503s
+            if i == tries - 1 or (isinstance(e, urllib.error.HTTPError) and e.code < 500):
+                raise
+            time.sleep(2 ** i * 5)
 
 
 def short(n):
@@ -104,14 +111,14 @@ def card(t, kicker, title, desc, body, lang, lcolor, note, tag=None):
 
 def pipeline(t):
     out, x = "", 28
-    for i, s in enumerate(["fetch", "decode", "execute", "commit"]):
+    for i, s in enumerate(["fetch", "decode", "execute", "writeback"]):
         hl = i == 2
         out += (f'<rect x="{x}" y="120" width="84" height="30" rx="6" fill="{t["chip"]}" stroke="{t["ac"] if hl else t["bd"]}"/>'
                 f'<text x="{x + 42}" y="139" text-anchor="middle" style="{F};font-size:12px" fill="{t["fg"] if hl else t["mu"]}">{s}</text>')
         if i < 3:
             out += f'<path d="M{x + 88} 135h10m-4-4 4 4-4 4" fill="none" stroke="{t["mu"]}" stroke-width="1.3"/>'
         x += 102
-    return out + chips(["RV32IMA", "Zicsr", "Sv32", "M/S/U modes"], 28, 164, t)
+    return out + chips(["RV32IMAC", "Zicsr", "Sv32", "M/S/U modes"], 28, 164, t)
 
 
 def stats(t, nums, libs):
@@ -128,7 +135,7 @@ def main():
     commits, prs, merged, helped, libs = anyps5()
     print(f"riscv-emu: {lines} lines | AnyPS5: {commits} commits, {prs} PRs, {merged} merged, {helped} helped, libs={libs}")
     ms = emu_milestones()
-    print("milestones:", ", ".join(f"{n}={d}" for n, d in ms))
+    print("milestones:", ", ".join(f"{n}={d}" for _, n, d in ms))
     cards = {}
     for name, t in THEMES.items():
         cards[f"riscv-{name}"] = card(t, "BUILDING", "riscv-emu", "A RISC-V emulator, written from the spec.",
@@ -158,7 +165,7 @@ def emu_milestones():
     src = {}
     for sha, _ in commits:
         files = [f for f in git("ls-tree", "-r", "--name-only", sha).splitlines() if re.match(r"(src|include)/.*\.[ch]$", f)]
-        src[sha] = "\n".join(git("show", f"{sha}:{f}") for f in files)
+        src[sha] = strip_comments("\n".join(git("show", f"{sha}:{f}") for f in files))
     out = []
     for m in spec:
         when = m.get("done")
@@ -166,8 +173,16 @@ def emu_milestones():
             ok = lambda sha: all(re.search(p, src[sha]) for p in m["detect"])
             if ok(commits[-1][0]):
                 when = next(d for sha, d in commits if ok(sha))
-        out.append((m["name"], dt.date.fromisoformat(when) if when else None))
+        out.append((m["phase"], m["name"], dt.date.fromisoformat(when) if when else None))
     return out
+
+
+def strip_comments(c):
+    """Drop C comments so a TODO like '// add PLIC later' doesn't count as done (string literals are kept)."""
+    return re.sub(r'//[^\n]*|/\*.*?\*/|("(?:\\.|[^"\\])*")', lambda m: m[1] or "", c, flags=re.S)
+
+
+assert strip_comments('a; // plic\nb /* sbi_x */ "x//y"') == 'a; \nb  "x//y"'
 TL_START, TL_MONTHS = (2026, 7), 30          # Jul 2026 .. Dec 2028
 EMU_START, EMU_END = (2026, 7), (2028, 1)    # riscv-emu: first commit .. target "done by end of 2027"
 OS_START = (2028, 1)                         # OS from scratch: after the emulator, end date not set
@@ -181,9 +196,10 @@ assert months_since((2026, 7), (2028, 1)) == 18
 
 
 def timeline(t, today, milestones):
-    cols, row_h = 4, 24
-    rows = -(-len(milestones) // cols)
-    list_y = 236
+    phases = list(dict.fromkeys(p for p, _, _ in milestones))  # one list column per phase, in file order
+    row_h = 22
+    rows = max(sum(1 for p, _, _ in milestones if p == ph) for ph in phases)
+    list_y = 256
     TW, TH = 980, list_y + (rows - 1) * row_h + 30
     bar_bottom = 192  # tracks + NOW label live above this; milestone list below
     pad = 6 / 1292 * TW / (1 - 2 * 6 / 1292)  # same outer gap as the stack strip
@@ -208,7 +224,7 @@ def timeline(t, today, milestones):
     e0, e1 = mx(EMU_START), mx(EMU_END)
     done = min(max(now, e0), e1)
     o0 = mx(OS_START)
-    n_done = sum(1 for _, d in milestones if d)
+    n_done = sum(1 for _, _, d in milestones if d)
     out += f'''
 <text x="28" y="{ey + 1}" style="{F};font-size:14px;font-weight:700" fill="{t["fg"]}">riscv-emu</text>
 <text x="28" y="{ey + 17}" style="{S};font-size:11px" fill="{t["mu"]}">{n_done}/{len(milestones)} milestones</text>
@@ -222,11 +238,12 @@ def timeline(t, today, milestones):
 <line x1="{now:.1f}" y1="96" x2="{now:.1f}" y2="{bar_bottom - 20}" stroke="{t["ac"]}" stroke-width="1.5"/>
 <text x="{now:.1f}" y="{bar_bottom - 8}" text-anchor="middle" style="{F};font-size:10px;letter-spacing:1px" fill="{t["ac"]}">NOW</text>'''
 
-    # milestone markers on the riscv-emu bar: done = tick at its date, pending = hollow dots spread from now to the target
-    pending = [i for i, (_, d) in enumerate(milestones) if not d]
+    # milestone markers on the riscv-emu bar: done = one numbered circle per month, pending = hollow dots
+    # spread evenly from now to the target (they have no date yet, so their position is only indicative)
+    pending = [i for i, (_, _, d) in enumerate(milestones) if not d]
     # done milestones days apart would overlap: one circle per month, mid-month, showing how many were done in it
     per_month = {}
-    for _, d in milestones:
+    for _, _, d in milestones:
         if d:
             per_month[(d.year, d.month)] = per_month.get((d.year, d.month), 0) + 1
     for ym, n in sorted(per_month.items()):
@@ -237,16 +254,19 @@ def timeline(t, today, milestones):
         x = done + 14 + (e1 - 20 - done - 14) * (k + 1) / (len(pending) + 1)
         out += f'<circle cx="{x:.1f}" cy="{ey}" r="4.5" fill="{t["bg"]}" stroke="{t["mu"]}" stroke-width="1.5"/>'
 
-    # milestone list, column-major, numbered in build order
-    out += f'<line x1="28" y1="{list_y - 26}" x2="{TW - 28}" y2="{list_y - 26}" stroke="{t["bd"]}"/>'
-    colw = (TW - 56) / cols
-    for i, (name, d) in enumerate(milestones):
-        x, y = 28 + (i // rows) * colw, list_y + (i % rows) * row_h
-        dot = (f'<circle cx="{x + 5}" cy="{y - 4}" r="4.5" fill="{t["ac"]}"/>' if d else
-               f'<circle cx="{x + 5}" cy="{y - 4}" r="4" fill="none" stroke="{t["mu"]}" stroke-width="1.2"/>')
-        when = f'<tspan fill="{t["mu"]}" style="{F};font-size:10px">  {d.strftime("%b %Y")}</tspan>' if d else ""
-        out += (dot + f'<text x="{x + 18}" y="{y}" style="{S};font-size:12px" fill="{t["fg"] if d else t["mu"]}">'
-                f'{name}{when}</text>')
+    # milestone list: one column per phase, header shows done/total for that phase
+    out += f'<line x1="28" y1="{list_y - 46}" x2="{TW - 28}" y2="{list_y - 46}" stroke="{t["bd"]}"/>'
+    colw = (TW - 56) / len(phases)
+    for c, ph in enumerate(phases):
+        items = [(n, d) for p, n, d in milestones if p == ph]
+        out += (f'<text x="{28 + c * colw:.0f}" y="{list_y - 20}" style="{F};font-size:10px;letter-spacing:1.5px" fill="{t["ac"]}">'
+                f'{ph.upper()} <tspan fill="{t["mu"]}">{sum(1 for _, d in items if d)}/{len(items)}</tspan></text>')
+    pos = {}
+    for p, n, d in milestones:
+        pos.setdefault(p, []).append((n, d))
+    for c, ph in enumerate(phases):
+        for r, (name, d) in enumerate(pos[ph]):
+            out += list_item(t, 28 + c * colw, list_y + r * row_h, name, d)
     vw, vh = TW + 2 * pad, TH + 2 * pad
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{vw:.2f}" height="{vh:.2f}" viewBox="{-pad:.2f} {-pad:.2f} {vw:.2f} {vh:.2f}">
 <defs><linearGradient id="fade" x1="0" x2="1"><stop offset="0" stop-color="{t["ac"]}" stop-opacity=".25"/><stop offset="1" stop-color="{t["ac"]}" stop-opacity="0"/></linearGradient></defs>
@@ -255,6 +275,14 @@ def timeline(t, today, milestones):
 {out}
 </svg>
 '''
+
+
+def list_item(t, x, y, name, d):
+    dot = (f'<circle cx="{x + 5:.0f}" cy="{y - 4}" r="4.5" fill="{t["ac"]}"/>' if d else
+           f'<circle cx="{x + 5:.0f}" cy="{y - 4}" r="4" fill="none" stroke="{t["mu"]}" stroke-width="1.2"/>')
+    when = f'<tspan fill="{t["mu"]}" style="{F};font-size:10px">  {d.strftime("%b %Y")}</tspan>' if d else ""
+    return (dot + f'<text x="{x + 18:.0f}" y="{y}" style="{S};font-size:12px" fill="{t["fg"] if d else t["mu"]}">'
+            f'{name}{when}</text>')
 
 
 def write_versioned(cards):
